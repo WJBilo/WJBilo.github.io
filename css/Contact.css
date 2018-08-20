@@ -1,0 +1,100 @@
+/* Styling til Contact.php */ 
+
+body {
+	margin: 0;
+	padding: 0;
+    text-align: center; 
+
+/* Funktionen rgba () definerer farver ved hjælp af  
+RGBA-modellen (Red-green-blue-alpha). 
+Med linear-gradient kan man definere f.eks. to farver
+og laver en smooth transitions mellem farverne*/ 
+    background: linear-gradient(rgba(0, 0, 50, 0.9),rgba(0, 0, 50, 0.1)),url(../images/contact.jpg) no-repeat center center fixed;
+    background-size: cover;
+    background-position: center; 
+}
+
+
+/* Styling til kontakt-overskriften */ 
+.kontakt-titel {
+  margin-top: 100px;
+  color: white;
+  text-transform: uppercase; 
+  /* transitions overgange giver dig
+   mulighed for at ændre property values smoothly,
+   i dette tilfælde ændre margin-top sig fra
+   0px til 100px hen over en bestemt mængde tid/* 
+  /* ease-in-out angiver en overgangseffekt 
+  med en langsom start og slutning */ 
+  transition: 1.5s ease-in-out;
+}
+
+.kontakt-titel h1 {
+  font-size: 32px;
+  line-height: 10px;
+} 
+
+.kontakt-titel h2 {
+  font-size: 16px;
+
+} 
+
+form 
+{
+	margin-top: 50px;
+	transition: 1.5s ease-in-out;
+}
+
+.form-control {
+    /* Følgende sørger for at bredden altid er 
+    100% - 25 px i hver side*/ 
+	width: calc(100% - 25px);
+	max-width: 530px;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid gray;
+	color: white; 
+	font-size: 18px;
+	margin-bottom: 16px;
+
+}
+
+input {
+
+	height: 45px;
+}
+
+/* Styling til send knappen */ 
+
+form .submit 
+{
+
+	background: grey;
+	border-color: transparent;
+	color: #fff;
+	font-size: 20px;
+	/* tykkere skrift */ 
+	font-weight: bold; 
+	/* mellemrum mellem bogstaver */ 
+    letter-spacing: 2px; 
+    height: 50px; 
+    margin-top: 20px;
+    width: auto; 
+    /* runde kanter */ 
+    border-radius: 12%; 
+
+}
+
+form .submit:hover {
+  opacity: 0.6; 
+  cursor: pointer;
+
+}
+
+/* bliver brugt til at skabe tom plads ned til footer
+ */ 
+
+h3 {
+  color: white;
+ }
+.space { margin-top: 440px; }

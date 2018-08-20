@@ -1,0 +1,80 @@
+/* Footer */ 
+footer {
+
+	padding: 10px 10px;
+	margin-top: 20px;  
+	background-color: #111 !important; 
+
+
+}
+footer ul {
+   padding-left: 20px; 
+}
+
+footer ul li {
+text-align: left;  
+display: block;
+
+color: grey;
+
+}
+
+footer ul li a {
+	font-size: 19px;
+	text-align: left !important; 
+	color: #fff;
+	line-height: 30px; 
+	opacity: 0.82; 
+}
+
+footer ul li a:hover {
+
+	opacity: 0.6; 
+}
+
+.footer-links-main 
+
+{
+	
+	max-width: 100px;
+	 
+
+
+}
+
+/*Latest cases */ 
+
+.footer-links-cases 
+
+{
+	
+max-width: 260px;
+
+ 
+/*Mobil og mail*/ 
+}
+
+.footer-links-kontakt 
+
+{
+	margin-top: -220px; 
+	float: right; 
+
+}
+
+/* Følgende sørger for at mail og mobil
+info flytter ned under de andre elementer
+når bredden på browseren bliver for smal */ 
+
+@media only screen and (max-width: 450px) {
+  .footer-links-kontakt  {
+	margin-top: 0px; 
+	float: left; 
+   }
+   footer {
+
+	padding-bottom: 100px; 
+	 
+   }
+}
+ 
