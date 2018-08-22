@@ -19,9 +19,9 @@ function udregn() {
 // eval tager string_regnestykke som parameter værdi i dette tilfælde. 
 	var answer = eval(String_regnestykke);  
 
-// Her checker jeg om udregning bliver evalueret til at være = Infinity eller NaN eller undefined
+// Her checker jeg om udregning bliver evalueret til at være = Infinity
 // og hvis det er tilfældet, så sætter jeg variablen answer ='Fejl'. 
-	if (answer === Infinity || NaN || undefined) {
+	if (answer === Infinity) {
           answer = 'Fejl'; 
           rydIndhold(); 
 	    }
