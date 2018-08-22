@@ -1,15 +1,14 @@
 .DisplayInput {
   border: 2px solid white;
-  width: 230px;
+  width: 303px;
   border-top: 2px solid black;
   border-left: 2px solid black;
   border-right: 2px solid black;
   box-shadow: 0px 0px 1px 1px; 
   text-align: right; 
   cursor: not-allowed;
-
-
-
+  font-size: 25px;
+  font-weight: 700;
 
 }
 .DisplayAnswer {
@@ -18,56 +17,58 @@
   border-left: 2px solid black;
   border-right: 2px solid black;
   box-shadow: 0px 1px 0px 1px; 
-  width: 230px;
+  width: 303px;
   margin-bottom: 20px;
   text-align: right; 
   cursor: not-allowed;
+  font-size: 25px;
+  font-weight: 700;
 }
 
 
 
 body {
 
-	background: url(background.png) center center;
-	background-size: cover; 
+/* med linear-gradient kan man definere f.eks. to farver
+     og laver en smooth transitions mellem farverne*/ 
+	background: linear-gradient(#191970, lightblue) fixed;
 	text-align: center; 
 
 }
 * {
 	font-family: Perpetua; 
-
 }
 
 .lommeregner {
 
-	background-color: grey; 
-	width: 250px; 
-	height: 400px;
+	background-color: silver;  
+	width: 320px; 
+	height: 440px;
 	border: 1px solid black;
-	padding:20px;
+	padding:12px;
 	border-radius: 20px; 
+	/* 50px mellemrum mellem lommeregner og toppen */ 
+	/* auto placere denne inde i midten */ 
 	margin: 50px auto;
-	box-shadow: 0px 0px 3px 5px #ccc; 
 }
 
 .knap {
-	width: 41px;
-	height: 35px;
+	width: 54px;
+	height: 44px;
 	margin:3px; 
 	margin-top: 12px; 
 	box-shadow: 0px 0px 2px 1px black; 
 	border-radius: 5px; 
-	outline: none;
-
+	font-size: 20px;
+	font-weight: 1000;
 }
 
 .knap:hover {
-
 	cursor: pointer;
 }
 
 .navn {
 font-family: Script; 
-opacity: 0.6; 
+opacity: 0.7; 
 
 }
