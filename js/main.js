@@ -1,38 +1,39 @@
-var String_regnestykke = ""; 
-// Denne her string kommer til at indholde det samme  
-// som skærmens input felt. Men istedet for at f.eks. COS knappen
-// tilføjer cos(, som den gør ved inputfeltet, så bliver Math.cos( tilføjet
-// til denne her string på samme tid. Når man så trykker på knappen med lighedstegnet så 
-// er det udtrykket inden i denne her string, 
-// som bliver udregnet ved hjælp af eval() funktionen.
-// og eval() retunere så svaret og det bliver vist nederst på lommeregnerens skærm 
-// Så det som brugeren ser i inputfeltet øverst på lommeregneren er 
-// egentlig ikke det udtryk der bliver udregnet i sidste ende. 
 
+// Her definere jeg nogle funktioner 
+// som tager x som parameter værdi
+// Og inde i f.eks. sin(x) funktionen 
+// retunere jeg Math.sin(x), hvor x er funktionens argument. 
+// Funktionen sin(x) vil nu fungere på samme måde som 
+// den indbyggede funktion Math.sin(x) og retunere sinusværdien til x.
+// Grunden til at jeg gør det er for at undgår 
+// at der står f.eks. Math.sin på skærmen frem
+// for bare sin(), da Math.sin() ikke er nær så 
+// brugervenligt og pænt. Så sin(x) bliver tilføjet til
+// lommeregnerens input felt, frem for Math.sin(x). 
+function sin(x) {
 
-
-function udregn() {
-
-// eval() udregner indholdet af strengen 'String_regnestykke', som om
-// at det er et matematisk udtryk og retunere resultatet. Variablen 'answer'
-// indeholder derfor resultatet af regnestykket efter man trykker på '=' knappen.  
-// eval tager string_regnestykke som parameter værdi i dette tilfælde. 
-	var answer = eval(String_regnestykke);  
-
-// Her checker jeg om udregning bliver evalueret til at være = Infinity
-// og hvis det er tilfældet, så sætter jeg variablen answer ='Fejl'. 
-	if (answer === Infinity) {
-          answer = 'Fejl'; 
-          rydIndhold(); 
-	    }
-
-	document.getElementById('answer').value = answer;
-// Her udskriver jeg variablen i konsollen så man kan se 
-// det matematiske udtryk som bliver evalueret 
-	console.log(String_regnestykke); 
-// Jeg udskriver også det retunerede resultat som er gemt inde i variablen 'answer'. 
-	console.log("= " + answer); 
+	return Math.sin(x); 
 }
+
+function cos(x) {
+
+	return Math.cos(x); 
+}
+
+function sqrt(x) {
+
+	return Math.sqrt(x); 
+}
+
+function log(x) {
+
+    return Math.log(x); 
+
+}
+
+// Her sæætter jeg variablen PI = den indbyggede property Math.PI (ca. 3.14159)
+
+var PI = Math.PI; 
 
 
 // Her laver jeg en funktion som tager et nummer som parameter værdi
@@ -46,51 +47,41 @@ function hentNummer(nummer) {
 // der bliver valgt og lægger det til variablen's værdi
 // F.eks. hvis man trykker på knappen med værdien '1', så
 // bliver funktion hentNummer kaldt med 1 som parameter værdi
-// og inde i fukntion bliver switch sætningen kørt og den stopper
+// og inde i funktionen bliver switch sætningen kørt og den stopper
 // ved case 1 i dette tilfælde og udføre den kode der er defineret i den case.
 // Og det der sker inde i f.eks. case 1 er at der bliver lagt
-// '1' til inputfeltets værdi og '1' til en strengen 'String_regnestykke'.   
+// '1' til inputfeltets værdi.   
 // .value fanger 'værdien' af variablen. 
 // x += 1 er det samme som at sige input x = x + 1: 
 	switch (nummer) {
 		case 1:
-		String_regnestykke += '1';
 		regnestykkePåSkærmen.value += '1';
 		break; 
 		case 2:
-		String_regnestykke += '2';
 		regnestykkePåSkærmen.value += '2'; 
 		break; 
 		case 3:
-		String_regnestykke += '3';
 		regnestykkePåSkærmen.value += '3';
 		break; 
 		case 4:
-		String_regnestykke += '4';
 		regnestykkePåSkærmen.value += '4';
 		break; 
 		case 5:
-		String_regnestykke += '5';
 		regnestykkePåSkærmen.value += '5';
 		break; 
 		case 6:
-		String_regnestykke += '6';
 		regnestykkePåSkærmen.value += '6';
 		break; 
 		case 7:
-		String_regnestykke += '7';
 		regnestykkePåSkærmen.value += '7';
 		break; 
 		case 8:
-		String_regnestykke += '8';
 		regnestykkePåSkærmen.value += '8';
 		break; 
 		case 9:
-		String_regnestykke += '9';
 		regnestykkePåSkærmen.value += '9';
 		break; 
 		case 0:
-		String_regnestykke += '0';
 		regnestykkePåSkærmen.value += '0';
 		break; 
 
@@ -110,63 +101,49 @@ function hentTegn(tegn) {
 	switch (tegn) {
 
 		case '+':
-		String_regnestykke += '+';
-		regnestykkePåSkærmen.value += ' + ';
+		regnestykkePåSkærmen.value += '+';
 		break; 
 		case '-':
-		String_regnestykke += '-';
-		regnestykkePåSkærmen.value += ' - ';
+		regnestykkePåSkærmen.value += '-';
 		break; 
 		case '*':
-		String_regnestykke += '*';
-		regnestykkePåSkærmen.value += ' * ';
+		regnestykkePåSkærmen.value += '*';
 		break; 
 		case '/':
-		String_regnestykke += '/';
-		regnestykkePåSkærmen.value += ' ÷ ';
+		regnestykkePåSkærmen.value += '/';
 		break; 
 		case '.':
-        // Dette if statement checker om regnestykkets længde er på 0
+		// Dette if statement checker om regnestykkets længde er på 0
         // og hvis det er det så læg '0.' til frem for '.'
-		if (String_regnestykke.length==0) {
-			String_regnestykke = "0.";
-			regnestykkePåSkærmen.value += '0.';
-		}
-		else {
-		String_regnestykke += '.';
-		regnestykkePåSkærmen.value += '.';
-		}
+		if (regnestykkePåSkærmen.value.length==0) {
+		regnestykkePåSkærmen.value += '0.'; 
+	    }
+	    else {
+	    	regnestykkePåSkærmen.value += '.';
+	    }
 		break; 
 		case 'Log':
-		String_regnestykke += 'Math.log(';
 		regnestykkePåSkærmen.value += 'log(';
 		break; 
 		case 'sqrt': 
-		String_regnestykke += 'Math.sqrt(';
-		regnestykkePåSkærmen.value += '√(';
+		regnestykkePåSkærmen.value += 'sqrt(';
 		break; 
 		case '(':
-		String_regnestykke += '(';
 		regnestykkePåSkærmen.value += '(';
 		break; 
 		case ')':
-		String_regnestykke += ')';
 		regnestykkePåSkærmen.value += ')';
 		break; 
 		case 'mod':
-		String_regnestykke += '%';
-		regnestykkePåSkærmen.value += ' Mod ';
+		regnestykkePåSkærmen.value += '%';
 		break; 
 		case 'pi':
-		String_regnestykke += Math.PI; 
-		regnestykkePåSkærmen.value += 'π'; 
+		regnestykkePåSkærmen.value += 'PI'; 
 		break; 
 		case 'SIN':
-		String_regnestykke += 'Math.sin(';
 		regnestykkePåSkærmen.value += 'sin(';  
 		break; 
 		case 'COS':
-		String_regnestykke += 'Math.cos('; 
 		regnestykkePåSkærmen.value += 'cos(';  
 		break; 
 	}
@@ -214,12 +191,56 @@ function aktiverKnap() {
 // det hele = "". 
 function rydIndhold() {
 
-	String_regnestykke = "";
 	document.getElementById('input').value = "";
-	document.getElementById('answer').value = "";
-	// funktionen deaktiverKnap bliver også kaldt for at deaktivere
-	// de knapper med matematiske tegn, så man ikke kan
-	// starte regnestykket med f.eks. et '+' tegn. 
+	document.getElementById('resultatet').value = "";
+// funktionen deaktiverKnap bliver også kaldt for at deaktivere
+// de knapper med matematiske tegn, så man ikke kan
+// starte regnestykket med f.eks. et '+' tegn. 
 	deaktiverKnap();
+// Som undtagelse lader jeg '.' være aktiv da det 
+// er accepteret at starte regnestykket med '0.' 
+	document.getElementById('operandPunktum').disabled = false;
+
+}
+
+// Denne funktion bliver kaldt når man trykker på inputknappen 'C'.
+// Den sletter den seneste char der er blevet udskrevet. 
+
+function sletChar() {
+// sætter en variabel = det HTML element som har id'et 'input'
+// hvilket er et <input> element, som er  selve 'skærmem' på lommeregneren
+
+	var regnestykkePåSkærmen = document.getElementById('input'); 
+// Her sætter jeg variablen 'a' lig med værdien
+// af variablen 'regnestykkePåSkærmen.value'
+	var a = regnestykkePåSkærmen.value; 
+	// 
+
+	a = a.substring(0, a.length-1); 
+	regnestykkePåSkærmen.value = a; 
+	
+}
+
+
+
+function udregn() {
+
+// eval() udregner indholdet af variablen 'regnestykkePåSkærmen', som om
+// at det er et matematisk udtryk og retunere resultatet. Variablen 'resultatet'
+// indeholder derfor resultatet af regnestykket efter man trykker på '=' knappen.  
+	var regnestykkePåSkærmen = document.getElementById('input'); 
+	var resultatet = eval(regnestykkePåSkærmen.value);  
+
+// Her checker jeg om udregning bliver evalueret til at være = Infinity
+// og hvis det er tilfældet, så sætter jeg variablen resultatet ='kan ikke dividere med 0',
+// da denne fejl opstår hvis man prøver at dividere et tal med nul.  
+	if (resultatet === Infinity) {
+          resultatet = 'Kan ikke dividere med 0'; 
+          rydIndhold(); 
+	    }
+// Tilsidst sætter jeg det HTML Element som har id'et resultatet = selve
+// variablen der indeholder resultatet, så det bliver vist nederst på lommeregnerens skærm.
+
+	document.getElementById('resultatet').value = resultatet;
 
 }
