@@ -11,13 +11,15 @@
 // brugervenligt og pænt. Så sin(x) bliver tilføjet til
 // lommeregnerens input felt, frem for Math.sin(x). 
 function sin(x) {
-
-	return Math.sin(x); 
+// Math.sin og Math.cos måler vinkler i radianer ved default,
+// så får at få omregnet radianer om til vinkler,
+// gange jeg med PI og dividere med 180
+	return Math.sin(x * Math.PI/180); 
 }
 
 function cos(x) {
 
-	return Math.cos(x); 
+	return Math.cos(x * Math.PI/180); 
 }
 
 function sqrt(x) {
@@ -234,7 +236,7 @@ function udregn() {
 // Her checker jeg om udregning bliver evalueret til at være = Infinity
 // og hvis det er tilfældet, så sætter jeg variablen resultatet ='kan ikke dividere med 0',
 // da denne fejl opstår hvis man prøver at dividere et tal med nul.  
-	if (resultatet === Infinity) {
+	if (resultatet === Infinity || resultatet ===  -Infinity) {
           resultatet = 'Kan ikke dividere med 0'; 
           rydIndhold(); 
 	    }
