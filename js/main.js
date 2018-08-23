@@ -34,7 +34,6 @@ function log(x) {
 }
 
 // Her sæætter jeg variablen PI = den indbyggede property Math.PI (ca. 3.14159)
-
 var PI = Math.PI; 
 
 
@@ -186,8 +185,6 @@ function aktiverKnap() {
 }
 
 
-
-
 // Denne her funktion bliver kaldt når man trykker på knappen 
 // 'CE' og den rydder alt på skærmen ved at sætte 
 // det hele = "". 
@@ -201,7 +198,9 @@ function rydIndhold() {
 	deaktiverKnap();
 // Som undtagelse lader jeg '.' være aktiv da det 
 // er accepteret at starte regnestykket med '0.' 
+// Samme begrundelse for minus
 	document.getElementById('operandPunktum').disabled = false;
+	document.getElementById('operandMinus').disabled = false;  
 
 }
 
@@ -216,11 +215,18 @@ function sletChar() {
 // Her sætter jeg variablen 'a' lig med værdien
 // af variablen 'regnestykkePåSkærmen.value'
 	var a = regnestykkePåSkærmen.value; 
-	// 
+	
+// substring metoden udrager en del af en string
+// Her definere jeg at den string jeg gerne vil udrage 
+// skal starte ved index 0, hvilket er indexet for den første char
+// i den givne string og at den skal slutte ved indexet af den
+// sidste char i strengen -1. Så her sætter jeg variablen a = 
+// regnestykket - en char. Og sætter derefter lommeregnerens
+// inupt felt = a.  
 
 	a = a.substring(0, a.length-1); 
 	regnestykkePåSkærmen.value = a; 
-	
+   
 }
 
 
@@ -244,5 +250,4 @@ function udregn() {
 // variablen der indeholder resultatet, så det bliver vist nederst på lommeregnerens skærm.
 
 	document.getElementById('resultatet').value = resultatet;
-
 }
