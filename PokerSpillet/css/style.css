@@ -1,0 +1,341 @@
+
+
+/*Her giver vi blot alle elementer ingen styling, da nogle elementer har det fra start.*/
+* {
+ 
+    margin: 0;
+    padding: 0;
+    text-shadow: 10px 10px 16px #000000;
+    font-family: sans-serif;
+}
+
+body {
+    background: no-repeat; 
+    background: fixed;
+    background-size: cover;
+    background-position: center; 
+}
+
+/*Deal-knappen, som fÃ¥r hele magien til at starte*/
+.deal-knap {
+    background-color: #4286f4;
+    color: white;
+    border: 1px solid black;
+    padding: 10px;
+    border: none;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-top: 10px;
+}
+
+/*Knappen "deal", som får noget bling så snart musen holdes henover*/
+.deal-knap:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px black;
+}
+
+/*Kortene i sig selv, som har fået styling*/
+.poker-kort {
+    height: 175px;
+    width: 120px;
+    margin-right: 10px;
+    margin-left: 6px;
+
+}
+
+/*Denne class findes på alle knapper, inde i vores HTML, så de får samme styling*/
+.bet-button {
+    border: none;
+    padding: 10px;
+    padding-right: 7%;
+    padding-left: 7%;
+    margin-left: 5px;
+    background-color: white;
+    color: black;
+    margin-top: 15px;
+    border-radius: 10px; 
+    font-size: 18px;
+    margin-bottom: 15px; 
+}
+
+/*ID'erne herunder, skal selvfølgelig også have samme styling, så kortene er ens*/
+#kort0, #kort1, #kort2, #kort3, #kort4 {
+    border-radius: 10px;
+    transform-style: preserve-3d;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 10px black;
+    
+}
+
+#kort0:hover, #kort1:hover, #kort2:hover, #kort3:hover, #kort4:hover{
+   
+    box-shadow: 0 0 20px yellow;
+    
+}
+
+/*Vi ændrer musen til "pointer", når du holder musen henover kortene*/
+.poker-kort:hover {
+    cursor: pointer;
+    
+}
+
+/*Knapperne får samme styling, når musen holdes henover*/
+.bet-button:hover {
+    box-shadow: 0 0 10px black;
+    cursor: pointer;
+}
+
+/*Div som indeholder de visuelle kort-objekter*/
+.kort-placering {
+    border: 2px solid white;
+    width: 700px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
+    padding: 10px;
+    margin-top: 50px;
+    border-radius: 25px 25px 0px 0px;
+}
+
+/*Teksten "sats", får styling*/
+#bet-count {
+    margin-bottom: 80px;
+}
+
+/*Overskift (der hvor der stÃ¥r 'POKER'*/
+.sign {
+    font-size: 50px;
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 25px;
+}
+.space {
+    
+    height: 110px;
+
+}
+
+/*Teksten hvor der står, om hvad du har "jacks or better" eller "two pair"*/
+#demo {
+   margin-top: 20px; 
+    font-size: 50px; 
+    text-align: center; 
+    color: white;
+  
+}
+
+/*Teksten hvor der kommer til at stå, hvor mange point du får*/
+#gevinst {
+    border-radius: 10px;
+    color: white;
+    font-size: 50px; 
+    text-align: center; 
+    margin-bottom: 25px;
+}
+
+/*Vi giver overskriften en farve*/
+.overskrift {
+    color: white;
+}
+
+/*Vi definér farven på "Beløb" og "Sats"*/
+.bet-info p {
+    color: white;
+    
+}
+
+/*Teksten "Beløb"'s egen styling*/
+#amount {
+    font-size: 26px;
+}
+
+/*Teksten "Sats"'s egen styling*/
+#bet-count {
+    font-size: 26px;
+}
+
+/*Dette <p>-tag bruger vi til at give spilleren en bestemt besked - bruges typisk som fejl-information*/
+#status-message {
+     font-size: 26px; 
+
+}
+
+/*Dette er den div, som indeholder alle vores knapper*/
+.knapper-div {
+    border: 2px solid white;
+    width: 700px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: 10px;
+    border-radius: 0px 0px 25px 25px;
+}
+
+/*Vi definerer tabellen, og giver den noget bling*/
+table {
+    border: none;
+    border: 2px solid white;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 20px;
+    margin-top: 25px;
+}
+
+/*Dette er tabellens items, som får noget bling*/
+td {
+    padding-left: 5px;
+    padding-right: 5px;
+  
+}
+
+/*Vi giver prisen en farve (teksten i vores tabel)*/
+.price {
+    color: yellow; 
+}
+
+
+/* Ændrer følgende elementers dimensioner når skærmens bredde bliver mindre
+end 860px */ 
+@media screen and (max-width: 860px) {
+    .kort-placering, .knapper-div  {
+        width: 500px;
+        height: 100%;
+    }
+
+    #status-message {
+        font-size: 20px; 
+   }
+    
+    #kort0, #kort1, #kort2, #kort3, #kort4 {
+        width: 70px;
+        height: 100px; 
+    }
+
+    .overskrift {
+        font-size: 45px; 
+    }
+
+    #amount, #bet-count {
+        font-size: 22px;
+    }
+
+    .bet-button {
+        padding: 7px;
+        padding-right: 5%;
+        padding-left: 5%;
+    }
+    
+    #gevinst {
+        font-size: 30px; 
+    }
+
+    #demo {
+         font-size: 30px;
+     }
+  }
+
+/* Ændrer følgende elementers dimensioner når skærmens bredde bliver mindre
+end 545px */ 
+  @media screen and (max-width: 545px) {
+    .kort-placering, .knapper-div  {
+        width: 350px;
+        height: 100%;
+  
+    }
+    #status-message {
+        font-size: 16px; 
+   }
+    
+    #kort0, #kort1, #kort2, #kort3, #kort4 {
+        width: 58px;
+        height: 86px; 
+        border-radius: 4px; 
+        margin: 3px; 
+    }
+
+    .overskrift {
+        font-size: 40px; 
+    }
+
+    #amount, #bet-count {
+        font-size: 19px;
+    }
+
+    .bet-button {
+        padding: 6px;
+        padding-right: 5%;
+        padding-left: 5%;
+        font-size: 10px;
+    }
+
+    #gevinst {
+        font-size: 23px; 
+    }
+
+    #demo {
+         font-size: 23px;
+     }
+
+    table {
+        font-size: 16px;
+    }
+  }
+
+  /* Ændrer følgende elementers dimensioner når skærmens bredde bliver mindre
+end 390px */ 
+@media screen and (max-width: 390px) {
+    .kort-placering, .knapper-div  {
+        width: 270px;
+        height: 100%;
+        padding: 5px; 
+        border: 2px solid white;
+    }
+    #status-message {
+        font-size: 13px; 
+   }
+    
+    #kort0, #kort1, #kort2, #kort3, #kort4 {
+        width: 45px;
+        height: 60px; 
+        border-radius: 2px; 
+        margin: 1px; 
+    }
+
+    .overskrift {
+        font-size: 37px; 
+    }
+
+    #amount, #bet-count {
+        font-size: 17px;
+    }
+
+    .bet-button {
+        padding: 6px;
+        padding-right: 2%;
+        padding-left: 2%;
+        font-size: 12px;
+    }
+
+    #gevinst {
+        font-size: 21px;
+    }
+
+    #demo {
+         font-size: 21px; 
+     }
+
+    table {
+        font-size: 12px;
+    }  
+  }

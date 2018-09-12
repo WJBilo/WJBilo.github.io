@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Video Poker</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body style="background-color: #076324">
+
+    <!-- Overskrift -->
+    <div class="sign" id="sign">
+        <h2 class="overskrift">Video Poker</h2>
+    </div>
+
+    <!--Tekst til oplysninger-->
+    <div class="bet-info" id="bet-info">
+        <p style="text-align: center;" id="amount">Beløb: undefined</p>
+        <p style="text-align: center; margin-bottom: -30px;" id="bet-count">Sats: 0</p>
+    </div>
+
+    <!--Denne bruger vi dynamisk i vores javascript, som hele tiden sætter den til det vi ønsker.
+        Som standard kan den ikke ses på siden, men så snart der opstår noget, som vi har undgået, kommer den-->
+    <p id="status-message" style="text-align: center; margin-top: 30px; margin-bottom: -30px;"></p>
+
+    <!--Dette er vores kort, som vi starter ud med at have "vendt om" (røde)
+        Så praktisk talt, ændrer vi egentlig bare billedet fra starten-->
+    <div class="kort-placering" id="kort-placering">
+        <img class="poker-kort" id="kort0" src="img/Red_back.jpg">
+        <img class="poker-kort" id="kort1" src="img/Red_back.jpg">
+        <img class="poker-kort" id="kort2" src="img/Red_back.jpg">
+        <img class="poker-kort" id="kort3" src="img/Red_back.jpg">
+        <img class="poker-kort" id="kort4" src="img/Red_back.jpg">
+    </div>
+
+    <div class="knapper-div" id="knapper-div">
+        <!--Dette er vores knapper, som bruges til at satse med-->
+        <div class="bet-buttons" id="bet-buttons">
+            <button class="bet-max bet-button" id="max-bet" onclick="">Bet Max</button>
+            <button class="bet-single bet-button" id="single-bet" onclick="">Bet +1</button>
+            <button class="bet-button" onclick="nytSpil(); activateDealAgainButton();" id="deal-first" style="opacity: 1; cursor: pointer;">Deal</button>
+            <button class="bet-button" onclick="DealXAmount();" id="deal-second" style="opacity: 0; cursor: default; display: none;">Deal Again</button>
+            <button class="bet-button" onclick="" id="stand-knap" style="opacity: 0.4; cursor: not-allowed;">Stand</button>
+        </div>
+    </div>
+
+
+    <div class="space">
+        <!--demo er der hvor selve pokerhånden som spilleren har kommmer til at stå -->
+        <p id="demo"></p>
+        <!--gevinst er der hvor den mængde point som spilleren har vundet, kommer til at stå -->
+
+        <p id="gevinst"></p>
+
+    </div>
+
+    <div class="">
+        <!-- Følgende tabel giver en oversigt over hvor meget man kan vinde, baseret på hvilken
+             pokerhånd man får og hvor meget man better-->
+        <table border="1" id="table-id">
+            <tr>
+                <td>Udbetaling</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>Royal Flush</td>
+                <td id="0-1" class="price">250</td>
+                <td id="0-2" class="price">500</td>
+                <td id="0-3" class="price">1000</td>
+                <td id="0-4" class="price">2000</td>
+                <td id="0-5" class="price">4000</td>
+            </tr>
+            <tr>
+                <td>Straight Flush</td>
+                <td id="1-1" class="price">50</td>
+                <td id="1-2" class="price">100</td>
+                <td id="1-3" class="price">200</td>
+                <td id="1-4" class="price">400</td>
+                <td id="1-5" class="price">800</td>
+            </tr>
+            <tr>
+                <td>Fire Ens</td>
+                <td id="2-1" class="price">25</td>
+                <td id="2-2" class="price">50</td>
+                <td id="2-3" class="price">75</td>
+                <td id="2-4" class="price">100</td>
+                <td id="2-5" class="price">125</td>
+            </tr>
+            <tr>
+                <td>Fuldt Hus</td>
+                <td id="3-1" class="price">9</td>
+                <td id="3-2" class="price">18</td>
+                <td id="3-3" class="price">27</td>
+                <td id="3-4" class="price">36</td>
+                <td id="3-5" class="price">45</td>
+            </tr>
+            <tr>
+                <td>Flush</td>
+                <td id="4-1" class="price">6</td>
+                <td id="4-2" class="price">12</td>
+                <td id="4-3" class="price">18</td>
+                <td id="4-4" class="price">24</td>
+                <td id="4-5" class="price">30</td>
+            </tr>
+            <tr>
+                <td>Straight</td>
+                <td id="5-1" class="price">4</td>
+                <td id="5-2" class="price">8</td>
+                <td id="5-3" class="price">12</td>
+                <td id="5-4" class="price">16</td>
+                <td id="5-5" class="price">20</td>
+            </tr>
+            <tr>
+                <td>Tre Ens</td>
+                <td id="6-1" class="price">3</td>
+                <td id="6-2" class="price">6</td>
+                <td id="6-3" class="price">9</td>
+                <td id="6-4" class="price">12</td>
+                <td id="6-5" class="price">15</td>
+            </tr>
+            <tr>
+                <td>To Par</td>
+                <td id="7-1" class="price">2</td>
+                <td id="7-2" class="price">4</td>
+                <td id="7-3" class="price">6</td>
+                <td id="7-4" class="price">8</td>
+                <td id="7-5" class="price">10</td>
+            </tr>
+            <tr>
+                <td>Jacks or Better</td>
+                <td id="8-1" class="price">1</td>
+                <td id="8-2" class="price">2</td>
+                <td id="8-3" class="price">3</td>
+                <td id="8-4" class="price">4</td>
+                <td id="8-5" class="price">5</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+
+    // Dette class er ligesom et template eller blueprint for et deck objekt
+    class Deck
+    {
+
+
+        /* en constructor bliver kaldt når man 
+        opretter et objekt. Den forbereder det
+         nye objekt til brug.  */ 
+        // Den bliver automatisk kørt når man laver en instance af klassen 
+        constructor()
+        {
+
+            // Her erklærer vi et array 
+            this.deck = [] // Der er her alle kort-objekterne kommer til at blive gemt i
+
+
+             // I JavaScript er det som bliver kaldt this, selve "ejeren" af koden.
+            // Så når man laver en instance af klassen Deck f.eks.
+            // deck = new Deck();, så er 'deck' ejeren og 'this' bliver lig med 'deck'
+        }
+
+
+        // følgende funktion gennere et deck med kort når den bliver kaldt. 
+        // Når funktionen generate_deck bliver kaldt
+            //  bliver decket genreret og så bliver der skabt 52 kortobjekter 
+        generate_deck()
+        {
+
+            
+        
+            // Her bliver let card sat lig med en arrow funktion
+            // Funktionen har to parameterværdier, suit og value som argumenter
+            let card = (suit, value) =>
+            /* => er hvad man kalder en arrow function og den bliver benyttet her
+            da den ikke binder til 'this', som en normal funktion vil gøre.
+            Hvis jeg havde benyttet en normal anonym funktion her så ville this
+            peje på selve Window objektet hvilket ikke er optimalt */
+            { 
+                // Kort objekterne kommer til at have et navn, et suit og en værdi.
+                /* 
+                Så de værdier vi giver suit og value, som parameterværdier,
+                når vi skaber et nyt kortobjekt, bliver sat til this.value og this.suit.
+                */
+
+                this.name = value + ' of ' + suit
+                this.suit = suit
+                this.value = value
+                /* Får at få fat i det fjerde kort-objekts navn f.eks.
+                kan man skrive deck.deck[3].name, 
+                så this er deck[3] i det tilfælde*/ 
+
+
+                return {
+                    // Følgende er de properties der bliver retuneret 
+                    // Og når et objekt bliver udskrevet kunne det f.eks. se sådan her ud: Object { name: "2 of Clubs", suit: "Clubs", value: "2" }
+                    name: this.name,
+                    suit: this.suit,
+                    value: this.value
+                }
+            }
+
+            // Her laver vi et array der indeholder de forskellige værdier som kortene kan have
+            let values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jacks', 'Queen', 'King', 'Ace']
+            // Her laver vi et array med de forskellige suits kortene kan have 
+            let suits = ['Clubs', 'Diamonds', 'Spades', 'Hearts']
+
+            // Følgende loops skaber selve decket med kort-objekterne, ved at
+            // 'pushe' 52 kort objekter ind i deck-arrayet 
+
+            // Første for loop skal skal gentage 4 gange da der i alt er 4 suits 
+            for (let s = 0; s < suits.length; s++)
+            {
+                // Andet for loop skal gentage 13 gange ved hver suit og i alt 4*13 = 52 gange
+                for (let v = 0; v < values.length; v++)
+                {
+                    // Her bliver der tilføjet 52 kort-objekter til deck arrayet ved hjælp af push() metoden
+                    //
+                    // Her bliver retur værdien af card funktionen, skubbet ind 
+                    // i vores deck og i det her tilfælde er retur værdien af
+                    // vores card funktion et objekt (Kort-objekt), som kommer til
+                    // at have en suit, en værdi og et navn
+                    this.deck.push(card(suits[s], values[v]))
+                }
+            }
+        }
+
+        // ----------------------
+
+        // shuffle the deck
+        // Følgende funktion blander decket når den bliver kaldt 
+        shuffle()
+        {
+            // her sætter vi en variabel lig med længden af decket
+            let currentIndex = this.deck.length
+                // Temporary value
+                let temp_val
+                // Random index
+                let rand_ind;
+
+            //Hvis currentIndex (længden på decket) ikke er lig med 0, skal følgende kode blive ved med at køre i et loop (køre i alt 52 gange)
+            while (0 !== currentIndex)
+            {
+                /* Her bliver der skabt et komma tal mellem 0 og 1, 
+                ved hjælp af Math.Random, hvorefter komma tallet bliver ganget
+                med variablen currentIndex, som er længden på decket. 
+                f.eks. 0,66 * 52 = 34,32, herefter bliver tallet rundet ned til 34
+                ved hjælp af Math.floor. Og tallet bliver sat lig med variablen rand_ind  */ 
+                rand_ind = Math.floor(Math.random() * currentIndex); // Math.random retunerer et komma tal mellem 0 og 1. 
+
+                // Herfter bliver der trukket 1 fra variablen currentIndex
+                currentIndex -= 1;
+
+                /* Variablen temp_val bliver sat lig med et index i deck arrayet
+                , hvilket svarer til et af kort-objekterne
+
+                */ 
+                temp_val = this.deck[currentIndex];
+
+                // Her ændres indexet på det nuværende kort-objekt til et 
+                // random index i deck arrayet, f.eks. deck[52] = deck[34]
+                this.deck[currentIndex] = this.deck[rand_ind];
+                // Og kort-objektet der havde sin plads på det tilfældige index
+                // skifter plads med det nuværende kort-objekts plads
+                // feks.deck[34] = deck[52]
+                this.deck[rand_ind] = temp_val;
+            }
+        }
+
+      // Følgende method uddeler et x antal kort
+        deal(num_cards)
+        {
+            //Vi laver en array, samt et "for" loop
+            //I vores "for" loop, sætter vi c = 0, og tjekker om c < "num_cards"
+            //Hvis c < num_cards, så skal der lægges 1 til c (c++)
+            //Derefter bliver der uddelt 5 kort til spilleren, som bliver smidt ind i vores "cards"-array og returneret derefter                                                                            
+            let cards = []
+            for (let c = 0; c < num_cards; c++)
+            {
+                // For hver loop omgang bliver variablen dealt_card sat lig med
+                // et kort fra deck array, hvilket bliver fjernet fra deck arrayet ved
+                // hjælp af shift metoden 
+                let dealt_card = this.deck.shift() // Metoden shift () fjerner det første element fra et array og returnerer det fjernede element. 
+
+                // Her bliver det fjernede kort skubbet ind i cards arrayet 
+                cards.push(dealt_card)
+            }
+
+            return cards
+        }
+        
+
+        //Her tømmer vi blot kortspillet, altså vores array som indeholder kortene
+        clear_deck()
+        {
+            this.deck = []
+        }
+
+
+    } // Her slutter klassen 'Deck'
+
+    // Her laver jeg et objekt eller et instance af klassen Deck
+    // new betyder at skabe et objekt 
+    deck = new Deck();
+
+    // Følgende er funktioner som er en del af objektet 
+    // Der bliver genereret et deck hvorefter at decket bliver blandet 
+    deck.generate_deck();
+    deck.shuffle();
+
+
+
+
+    //Vi sætter værdierne til globale variabler, så vi kan have en indflydelse på dem i koden.
+    //Dette er godt, for så er de ikke 'hardcoded', og derved er de nemmere at arbejde med.
+
+    // variablen hand kommer til at indeholde et array af kort objekter 
+    var hand;
+
+    // // variablen newHand kommer også til at indeholde et array af kort objekter 
+    var newHand;
+    
+    // erklærer variablen Penge, hvilket er her brugerens gevinst (Antal point vundet) bliver gemt i 
+    var Penge;
+
+    // Følgende variabel benytter vi til at holde øje med om brugeren skal have udbetalt sine penge
+    var udbetalingAllowed = false;
+
+    // erklærer variablen moneyStatus, hvilket er her brugerens beløb bliver gemt i
+    var moneyStatus;
+
+    // erklærer variablen sats, hvilket er her brugerens sats bliver gemt i
+    var sats = 0;
+
+    // følgende referer til hvilken pokerhånd som spilleren får 
+    // f.eks har vi valgt at referer 'Jacks or better' til 8. 
+    // Så når spilleren får Jacks or better så bliver Pokerhanden opdateret til at være lig med 8. 
+    var pokerHanden;
+
+    // Følgende referer til hvilken sats som spilleren spiller med den givne rundte. 
+    var theSats;
+
+    // Følgende variabel kommer til at indeholder indexet for et felt i tabellens f.eks. 8-1( indexBoth = pokerHanden + "-" + theSats; )
+    var indexBoth;
+
+
+    // Stand knappen skal fra start af være deaktiveret 
+    document.getElementById('stand-knap').disabled = true;
+
+
+    //Her sætter vi betting knappen til at have et onclick event der svare til følgende funktion
+    document.getElementById('max-bet').onclick = function()
+    {
+        if (moneyStatus <= 4)
+        {
+            deaktiverBetMaxKnap(); 
+           
+        }
+        else
+        {
+            // Følgende køre funktionen maxBet, som trækker 5 fra beløbet og lægg
+            // -er 5 til satsen
+            // 
+            maxBet();
+        }
+    };
+
+    // Følgende funktion deaktivere bet-max knappen.
+    function deaktiverBetMaxKnap () 
+    {
+    
+        document.getElementById('max-bet').style.opacity = "0.4";
+        document.getElementById('max-bet').style.cursor = "not-allowed";
+        document.getElementById('status-message').disabled = false; 
+        document.getElementById('status-message').innerHTML = "Du har ikke nok penge til at bette max.";
+        document.getElementById('status-message').style.color = "red";
+            
+    }
+
+    // Følgende funktion bliver kørt, når det er at spilleren trykker på Bet Max knappen. 
+    // Det der sker er at der bliver trukket 5 point fra spillerens
+    // fulde beløb og satsen bliver sat til 5.
+    function maxBet()
+    {
+        //Her tjekker vi om vedkommendes penge er i minus.
+        //Hvis det er tilfældet, fortæller vi brugeren at det er game over.
+        if (!(moneyStatus <= 0))
+        {
+            //Her tjekker vi om 'sats' allerede er 5, som er maks.
+            //Hvis den er lig med 5, så fortæller vi brugeren det.
+            if (document.getElementById('bet-count').innerHTML == "Sats: 5")
+            {
+                maxSatsOpnaaet();
+            }
+            else
+            {
+                //Men hvis 'sats' ikke har ramt 5 endnu, køres denne kode.-
+                //Her laver vi et lille regnestykke, hvor vi finder forskellen fra 5 og den nuværende 'sats'.-
+                //Derefter trækker vi forskellen fra beløbet (moneyStatus), og sætter 'sats' til maks (5).
+                //Herefter gør vi som altid - vi sætter beløbet og satsningen til værdierne.
+                let mat = 5 - sats;
+                moneyStatus = moneyStatus - mat;
+                sats = 5;
+                 //  document.getElementById("deal-first").disabled = false; bliver benyttet da spilleren kun skal kunne
+                 // trykke deal hvis de mindst har bettet 1 
+                document.getElementById("deal-first").disabled = false;
+                // Den opdatere også beløbet på skærmen og satsen. 
+                opdaterBeloebOgSats()
+
+            }
+        }
+        else
+        {
+            //Hvis ingen af ovenstående er rigtige, må det være tilfældet at brugeren ikke har flere penge.
+            outOfMoney();
+
+        }
+    }
+
+    // Følgende funktion bliver kørt når det er at spilleren
+    // prøver at bette mere end 5 point pr runde, hvilket ikke
+    // er tilladt, så der bliver udskrevet en advarsel. 
+    function maxSatsOpnaaet()
+    {
+        document.getElementById('status-message').innerHTML = "Du kan ikke satse mere end 5 pr. runde."
+        document.getElementById('status-message').style.color = "red";
+
+    }
+
+        // Den opdatere også beløbet på skærmen og satsen. 
+    function opdaterBeloebOgSats()
+    {
+        document.getElementById('amount').innerHTML = 'Beløb: ' + moneyStatus;
+        document.getElementById('bet-count').innerHTML = 'Sats: ' + sats;
+        setCookie("moneyStatus", moneyStatus, 5);
+
+    }
+
+     // Følgende funktion benyttes for at fortælle spilleren at han
+    // ikke har flere penge at spille med. 
+    function outOfMoney()
+    {
+        document.getElementById('status-message').innerHTML = "Du har ikke flere penge.";
+        document.getElementById('status-message').style.color = "red";
+    }
+    
+
+
+        // Følgende gør at når man trykker på single bet knappen så køre singleBet() funktionen
+    document.getElementById('single-bet').onclick = function()
+    {
+            singleBet()
+    };
+
+     // Følgende funktion bliver kørt, når det er at spilleren trykker på Single Bet knappen. 
+    // Det der sker er at der bliver trukket 1 point fra spillerens
+    // fulde beløb og der bliver lagt 1 point til satsen,
+     // hver gang der bliver trykket på knappen. 
+    function singleBet()
+    {
+        //Her tjekker vi om 'sats' allerede er 5, som er maks.
+        //Hvis den er lig med 5, så fortæller vi brugeren det.
+        if (document.getElementById('bet-count').innerHTML == "Sats: 5")
+        {
+
+            maxSatsOpnaaet();
+
+        }
+        else
+        {
+            if (!(moneyStatus <= 0))
+            {
+
+                //Her bliver der sørget for, at sats værdien bliver ændret og opdateret.
+                let add = 1;
+                sats = sats + add;
+                //Her bliver der sørget for, at moneyStatus (beløbet), bliver ændret og opdateret.
+                let subtract = 1;
+                moneyStatus = moneyStatus - subtract;
+
+                document.getElementById("deal-first").disabled = false;
+                // Den opdatere også beløbet på skærmen og satsen. 
+                opdaterBeloebOgSats()
+            }
+            else
+            {
+                //Hvis ingen af ovenstående er rigtige, må det være tilfældet at brugeren ikke har flere penge.
+                outOfMoney();
+            }
+
+        }
+    }
+
+     // Følgende funktion bliver kørt når man trykker på deal knappen.
+    // hvis man ikke har satset nogle penge, vender kortenes sig til den
+    // Røde bagside og forhindre brugeren i at kunne fortsætte. 
+    // Den låser også kortene fast ved at køre funktionen laasKortFast() 
+    // Hvis brugeren dog har satses penge bliver StartSpillet funktionen kørt
+    // hvilket initere en ny runde 
+    function nytSpil()
+    {
+
+        //Resetter de paragraffer der indeholder navnet på pokerhånden og 
+        //antallet af point som personen har vundet 
+        document.getElementById("gevinst").innerHTML = "";
+        document.getElementById("demo").innerHTML = "";
+        
+        // Her laver vi et for loop 
+        for (let c = 0; c < 5; c++)
+        {
+
+            $('#kort' + c).css(
+            {
+                // Her roterer vi kortet 90 grader
+                'transform': 'rotatey(90deg)'
+            });
+            // Hvorefter at vi sætter en timer til at vente 290 millisekunder før TransformToCard bliver kørt
+            setTimeout(TransformToCardBack, 290);
+
+            function TransformToCardBack()
+            {
+                // Resetter kortenes baggrunde til default rød baggrund
+                document.getElementById("kort" + c).src = "img/Red_back.jpg";
+                // Følgende resseter kortets rotation, så det er tilbage til 0 grader 
+                $('#kort' + c).css(
+                {
+                    'transform': 'rotatey(0deg)'
+                });
+            }
+        }
+
+        // Følgende sørger for at spilleren ikke kan skifte baggrunde på kortene i starten af runden 
+        laasKortFast();
+
+        // Her tjekker vi om personen har satset nogen penge og hvis personen ikke har det, så skal personen ikke kunne trykke på deal knappen. 
+        // Men hvis det ikke er tilfældet må han godt trykke på deal knappen. 
+        if (sats == 0)
+        {
+         // Følgende funktion bliver benyttet for at forhindre spilleren i at få uddelt kort, hvis spilelren ikke har satset point først
+         DuSkalSatseFirst();
+        } 
+        else 
+        {
+       // Vi venter lige 300 millisekunder før vi køre funktionen, for at vente på at rotations animationen bliver færdigt 
+        setTimeout(StartSpillet, 300);
+        }
+
+    }
+
+    // Følgende funktion låser kortene så der ikke sker noget når man trykker på dem
+    function laasKortFast()
+    {
+        // Ændrer kortenes onclick event til at indehole ingenting så man ikke kan trykke på dem efter en runde er slut. 
+        document.getElementById("kort0").onclick = "";
+        document.getElementById("kort1").onclick = "";
+        document.getElementById("kort2").onclick = "";
+        document.getElementById("kort3").onclick = "";
+        document.getElementById("kort4").onclick = "";
+    }
+
+    // Følgende funktion bliver benyttet for at forhindre spilleren i at få uddelt kort, hvis spilelren ikke har satset point først
+    function DuSkalSatseFirst()
+    {
+        document.getElementById('deal-first').disabled = true;
+        document.getElementById('status-message').innerHTML = "Du skal vælge et antal, som du vil spille for, før du kan få uddelt dine kort.";
+        document.getElementById('status-message').style.color = "red";
+    }
+
+    // Følgende funktion bliver kun kørt når man trykker på dealknappen og spilleren
+    // har bettet mindst 1 point.
+    // Den starter en ny runde. 
+    function StartSpillet()
+    {
+       
+            // Hver gang spilleren trykker på deal knappen
+            // skal decket blive discardet og der skal genereres et
+            // nyt deck, som bliver blandet. 
+            // Det er sådan at spilleren ikke kan skrive ned hvilke 
+            // kort der allerede er blevet spillet fra decket 
+            //(Hvilket spilleren vil gøre for nemmere at kunne 
+            //gætte hvilke kort der bliver dealet), 
+            // så hver gang en runde er over, smider vi det gamle deck væk og bruger et nyt. 
+            deck.clear_deck();
+            deck.generate_deck();
+            deck.shuffle();
+            
+            // Deal knappen skal derefter disables, da deal again knappen skal overtage dens plads 
+            document.getElementById('deal-first').disabled = false;
+
+            // Her bliver dealtHand funktionen kørt som dealer kort til spilleren. 
+            dealtHand();
+    }
+
+    // Denne funktion dealer kort til spilleren 
+    function dealtHand ()
+    {
+        // Her sætter jeg variablen 'hand' lig med et array på fem kort objekter. 
+        hand = deck.deal(5);
+
+        //Her sætter vi de tilfældige korts navne, lig med fem variabler.
+        //Blot så vi nemmere kan hente værdierne af deres navne.
+        var currentName0 = hand[0].name;
+        var currentName1 = hand[1].name;
+        var currentName2 = hand[2].name;
+        var currentName3 = hand[3].name;
+        var currentName4 = hand[4].name;
+
+        //Her sætter vi de tilfældige kort, til det billede som matcher kortet.  
+        // Her ændrer vi kort-billiderne's src til at passe med kortene der er blevet dealet.                                          
+        document.getElementById("kort0").src = "img/" + currentName0 + ".jpg";
+        document.getElementById("kort1").src = "img/" + currentName1 + ".jpg";
+        document.getElementById("kort2").src = "img/" + currentName2 + ".jpg";
+        document.getElementById("kort3").src = "img/" + currentName3 + ".jpg";
+        document.getElementById("kort4").src = "img/" + currentName4 + ".jpg";
+
+        // Her sætter vi fem variabler lig med kort billidernes id  
+        // Kort 1 har f.eks. id'et: 'kort1'
+        var kort0 = "kort0";
+        var kort1 = "kort1";
+        var kort2 = "kort2";
+        var kort3 = "kort3";
+        var kort4 = "kort4";
+
+        // Her ændrer vi kortenes onclick event til at være lig med funktionen udskift.
+        document.getElementById('kort0').onclick = function()
+        {
+            udskift(currentName0, kort0)
+        };
+        document.getElementById('kort1').onclick = function()
+        {
+            udskift(currentName1, kort1)
+        };
+        document.getElementById('kort2').onclick = function()
+        {
+            udskift(currentName2, kort2)
+        };
+        document.getElementById('kort3').onclick = function()
+        {
+            udskift(currentName3, kort3)
+        };
+        document.getElementById('kort4').onclick = function()
+        {
+            udskift(currentName4, kort4)
+        };
+
+        // Køre CheckPokerhaand funktionen efter man dealer igen. 
+        // Den checker om spilleren har en pokerhånd der er point vær
+        CheckPokerhaand();
+    }
+
+    // Funktionen udskift tager to parameter værdier hvilket er navnet på kort objektet 'Card' (kunne f.eks. være 'Ace of Spades' efter den bliver kaldt med currentName)
+    // og CardID, hvilket er HTML elementet hvor billidet af kortet bliver defineret (f.eks. <img class="poker-kort" id="kort0" src="img/Red_back.jpg">)
+    // hvor CardID f.eks. kunne være "kort0" når den bliver kaldt ved at man trykker på et kort-billide
+    // Funktionen fungere på den måde at når man trykker på et kort-billide i browseren, ændrer kort-billedet's src til
+    // den røde bagside af kortet, og omvendt hvis den allerede har den røde bagside vendt opad, ændrer den sig tilbage til 
+    // at have f.eks. 'Ace of spades' til at vende opad            
+    function udskift(Card, CardID)
+    {
+
+        // Metoden replace () returnerer en ny streng hvor windows.location.href bliver udskiftet med ""
+        // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i dette tilfælde 
+        //så CardID's src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
+        // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med 
+        // variablen kortSrc
+
+        let kortSrc = document.getElementById(CardID).src.replace(window.location.href, "");
+
+        // I følgende if statement checker vi om kort-billedets src passer til
+        // navnet på kort objektet og hvis det gøt det, så skal vi ændre src'en til den røde bagside af kortet
+        // og omvendt hvis den allerede har den røde bagside vendt opad, ændrer den sig tilbage til 
+        // at have f.eks. 'Ace of spades' til at vende opad                
+        if (kortSrc == "img/Red_back.jpg")
+        {
+            // Her roterer vi kortet 90 grader
+            $('#' + CardID).css(
+            {
+                'transform': 'rotatey(90deg)'
+            });
+            // Hvorefter at vi sætter en timer til at vente 220 millisekunder før TransformToCard bliver kørt
+            setTimeout(TransformToCard, 220);
+        }
+        else
+        {
+            $('#' + CardID).css(
+            {
+                'transform': 'rotatey(90deg)'
+            });
+
+            setTimeout(TransformToRedBack, 220);
+            //Her ændre vi statussen, så vi ved at kortet er blevet ændret.
+            //  kortStatus = 2;
+        }
+
+        function TransformToRedBack()
+        {
+            // Ændrer billidets bagrund til Rød bagside 
+            document.getElementById(CardID).src = "img/Red_back.jpg";
+            // Følgende resseter kortets rotation, så det er tilbage til 0 grader 
+            $('#' + CardID).css(
+            {
+                'transform': 'rotatey(0deg)'
+            });
+        }
+
+        function TransformToCard()
+        {
+            // Ændrer billidets bagrund til kortets forside
+            document.getElementById(CardID).src = "img/" + Card + ".jpg";
+            // Følgende resseter kortets rotation, så det er tilbage til 0 grader 
+            $('#' + CardID).css(
+            {
+                'transform': 'rotatey(0deg)'
+            });
+
+        }
+    }
+
+    //Følgende funktion bruges til at beregne kortene, i forhold til hvad man har af pokerhånd
+    //Om det er en straight, flush, to par eller hvordan, hænger sammen i denne funktion
+    //Selvfølgelig fortæller vi også brugeren, hvad pokerhånden består af
+    function CheckPokerhaand()
+    {
+        // Calculate any payout and display the results (updating the bank/etc)
+
+        // Erklærer variablen cards og sætter det lig med et tomt array
+        var cards = [];
+
+        // Erklærer variablen flushConfirmed og sætter den lig med true 
+        var flushConfirmed = true;
+
+        for (let x = 0; x < hand.length; x++)
+        {
+            // Følgende gør at flushConfirmed kun er true når
+            // alle kortenes suits er ens
+            flushConfirmed = flushConfirmed && (hand[0].suit == hand[x].suit);
+            cards[x] = hand[x].value;
+
+            // let values = ['2', '3','4','5', '6', '7', '8', '9', '10', 'Jacks', 'Queen', 'King', 'Ace']
+            // Her checker jeg om værdierne f.eks. er 'Ace' og hvis det er det så ændrer jeg værdien til '1' da det er lettere at sortere.
+
+            switch (cards[x])
+            {
+                case 'Ace':
+                    cards[x] = 1;
+                    break;
+                case '2':
+                    cards[x] = 2;
+                    break;
+                case '3':
+                    cards[x] = 3;
+                    break;
+                case '4':
+                    cards[x] = 4;
+                    break;
+                case '5':
+                    cards[x] = 5;
+                    break;
+                case '6':
+                    cards[x] = 6;
+                    break;
+                case '7':
+                    cards[x] = 7;
+                    break;
+                case '8':
+                    cards[x] = 8;
+                    break;
+                case '9':
+                    cards[x] = 9;
+                    break;
+                case '10':
+                    cards[x] = 10;
+                    break;
+                case 'Jacks':
+                    cards[x] = 11;
+                    break;
+                case 'Queen':
+                    cards[x] = 12;
+                    break;
+                case 'King':
+                    cards[x] = 13;
+                    break;
+            }
+
+        }
+        // Følgende sortere kortene så det er lettere at 
+        // derteminere om spilleren har fået en straight
+        cards.sort(cardSort);
+        
+        //Royal Flush:
+
+        // Først checker vi om vi har en es, konge, dame, knægt og ti'er 
+        if ((cards[0] == 1) &&
+            (cards[1] == 10) &&
+            (cards[2] == 11) &&
+            (cards[3] == 12) &&
+            (cards[4] == 13))
+        {
+            // Så checker vi om flushConfirmed er true hvilket 
+            // det er hvis alle kortene har samme suit
+            if (flushConfirmed)
+            {
+                // 0 = royal flush
+                // Sætter det lig første værdi i array hvilket er royal flush 
+                document.getElementById("demo").innerHTML = "Royal flush ";
+                PokerHandPayout(0, sats);
+                // Følgende aktivere standknappen 
+                aktiverStandKnap();
+            }
+            else
+            {
+                // Just a straight
+                document.getElementById("demo").innerHTML = "Straight  ";
+                PokerHandPayout(1, sats);
+                aktiverStandKnap();
+            }
+        }
+
+        // Straight Flush:
+
+        // Følgende checker om værdien af kortet med den
+        // lavest værdi, passer til værdien af det næste kort
+        // i rækken minus 1 osv. 
+        // Kunne feks være hvis man har kort 
+        // med værdierne 1, 2, 3, 4 og 5
+       
+        else if ((cards[0] == (cards[1] - 1)) &&
+            (cards[1] == (cards[2] - 1)) &&
+            (cards[2] == (cards[3] - 1)) &&
+            (cards[3] == (cards[4] - 1)))
+        {
+            // Så checker vi om flushConfirmed er true hvilket 
+            // det er hvis alle kortene har samme suit
+            if (flushConfirmed)
+            {
+                // 0 = straight flush
+                document.getElementById("demo").innerHTML = "Straight flush ";
+                PokerHandPayout(1, sats);
+                aktiverStandKnap();
+            }
+            else
+            {
+                // Just a straight
+                document.getElementById("demo").innerHTML = "Straight";
+                PokerHandPayout(5, sats);
+                aktiverStandKnap();
+            }
+        }
+        // Flush: 
+        
+        else if (flushConfirmed)
+        {
+            // Just a flush
+            document.getElementById("demo").innerHTML = "Flush ";
+            PokerHandPayout(4, sats);
+            aktiverStandKnap();
+        }
+        else if ((cards[1] == cards[2]) &&
+            (cards[1] == cards[3]) &&
+            ((cards[1] == cards[4]) || (cards[1] == cards[0])))
+        {
+            // Four of a kind
+            document.getElementById("demo").innerHTML = "Four of a kind ";
+            PokerHandPayout(2, sats);
+            aktiverStandKnap();
+        }
+        else if ((cards[0] == cards[1]) &&
+            (cards[3] == cards[4]) &&
+            ((cards[2] == cards[1]) || (cards[2] == cards[3])))
+        {
+            // Full House
+            document.getElementById("demo").innerHTML = " Full House ";
+            PokerHandPayout(3, sats);
+            aktiverStandKnap();
+        }
+        else if (((cards[0] == cards[1]) && (cards[1] == cards[2])) ||
+            ((cards[1] == cards[2]) && (cards[2] == cards[3])) ||
+            ((cards[2] == cards[3]) && (cards[3] == cards[4])))
+        {
+            // Three of a kind
+            document.getElementById("demo").innerHTML = "Three of a kind ";
+            PokerHandPayout(6, sats);
+            aktiverStandKnap();
+        }
+        else if (((cards[0] == cards[1]) && (cards[2] == cards[3])) ||
+            ((cards[0] == cards[1]) && (cards[3] == cards[4])) ||
+            ((cards[1] == cards[2]) && (cards[3] == cards[4])))
+        {
+            // Two Pair
+            document.getElementById("demo").innerHTML = "Two pair ";
+            PokerHandPayout(7, sats);
+            aktiverStandKnap();
+        }
+        else if (((cards[0] == cards[1]) && ((cards[0] == 1) || (cards[0] > 10))) ||
+            ((cards[1] == cards[2]) && ((cards[1] == 1) || (cards[1] > 10))) ||
+            ((cards[2] == cards[3]) && ((cards[2] == 1) || (cards[2] > 10))) ||
+            ((cards[3] == cards[4]) && ((cards[3] == 1) || (cards[3] > 10))))
+        {
+            // Jacks or better
+            document.getElementById("demo").innerHTML = "Jacks or better";
+            PokerHandPayout(8, sats);
+            aktiverStandKnap();
+        }
+        else
+        {
+            //Ingenting
+            document.getElementById("demo").innerHTML = "Bust";
+        }
+    }
+
+
+
+    // Denne funktion nulstiller sats variablen.
+    // Hvilket bliver kørt efter hver runde slutter  
+    function sats0()
+    {
+        sats = 0;
+        document.getElementById('bet-count').innerHTML = "Sats: " + sats;
+    }
+
+    //Hvis man har en gyldig pokerhånd, køres denne funktion.
+    //Funktionen gør stand-knappen tilgængelig.
+    function aktiverStandKnap()
+    {
+        document.getElementById('stand-knap').style.opacity = "1";
+        document.getElementById('stand-knap').disabled = false;
+        document.getElementById('stand-knap').style.cursor = "pointer";
+    }
+
+    // Følgende gør at cashOut funktionen kører når man trykker på Stand knappen 
+    document.getElementById('stand-knap').onclick = function()
+    {
+        cashOut()
+    };
+
+    
+    // Følgende funktion bliver kaldt når brugeren vælger at trykke på stand knappen, får at få udbetalt hans gevinst.
+    function cashOut()
+    {
+        // VI ændrer variablen udbetalingAllowed til true, da brugeren skal have udbetalt hans penge
+        udbetalingAllowed = true;
+
+        //Følgende funktion gør at pengene kommer ind på vedkommendes beløb.
+        CheckPokerhaand();
+
+        // Udskriver gevinsten for pokerhånden 
+        document.getElementById("gevinst").innerHTML = "Du har vundet " + Penge + " point!";
+
+        // Venter ca 2 sekunder før siden bliver reloaded 
+        setTimeout("window.location.reload();", 1800);
+
+        //Vi disabler stand knappen efter første tryk, så du ikke kan blive ved med at få penge ind på kontoen.
+        document.getElementById('stand-knap').disabled = true;
+
+        //Baggrunden i tabellen skifter farve, når spilleren vælger at få udbetalt sine penge.
+        // Så hvis spilleren f.eks. har bettet 3 point og vinder på en Jacks or better hånd
+        //, så lyser tabellen det sted som passer til gevinsten 
+        document.getElementById(indexBoth).style.backgroundColor = "#d4af37";
+        // Vi venter 2 sekunder før vi kører funktionen fjernHighlight som 
+        // ændrer baggrunden tilbage til ikke defineret. 
+        setTimeout(fjernHighlight, 2000);
+        //Følgende funktionen gør at man ikke kan trykke på kortene 
+        laasKortFast();
+    }
+
+   /* Her laver vi en funktion som sætter en cookie 
+     Pointen med funktionen er at vi gerne vil have at browseren skal
+     huske hvor mange point som brugeren havde fra hans sidste spille-session
+     Funktionen setCookie sætter en cookie og tager et par parameter værdier i dette tilfælde 
+     cname er navnet på cookien
+     cvalue er cookiens værdi og den kommer til at blive kaldt med moneyStatus variablens værdi,
+     da den skal gemme brugerens beløb.
+     exdays specificere hvor mange dage cookien skal være gemt før den sletter sig selv */
+    function setCookie(cname, cvalue, exdays)
+    {
+        // Sætter variablen d lig med den nuværende dato og tid. 
+        var d = new Date();
+
+        // Metoden getTime () returnerer antallet af millisekunder mellem midnat den 1. januar 1970 og den angivne dato.
+        // Den angivne dato i dette tilfælde er den nuværende dato og tid, da variablen 'd' er lig med Date(); og Date() retunerer den nuværende dato og tid
+        // Metoden setTime () indstiller en ny dato og klokkeslæt ved at tilføje et bestemt antal millisekunder til variablen 'd' i dette tilfælde             
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000)); // exdays kunne f.eks. være defineret til 5, hvilket vil sige at cookien vil udløbe efter 5 dage
+        
+        //toUTCString Konverterer et Date-objekt til en string i henhold til universel tid
+        var expires = "expires=" + d.toUTCString();
+
+        // JavaScript kan oprette, læse og slette cookies med document.cookie property.
+        // Det er her i funktionen at der bliver oprettet en cookie 
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+
+        // "path=/" betyder at stien er indstillet og at man kan få adgang til cookiens navn overalt i domænet (http: // localhost eller http://example.com)     
+
+    }
+
+    // Derefter opretter vi en funktion, der returnerer værdien af en bestemt cookie:
+    // Tager cookiens navn som parameter (cname). 
+    function getCookie(cname)
+    {
+
+        // Opretter en variabel (name) med teksten der skal søges efter (cname + "=").                
+        var name = cname + "=";
+
+        // Afkoder cookiestrengen for at håndtere cookies med specialtegn, f.eks. '$'
+        var decodedCookie = decodeURIComponent(document.cookie);
+
+        // Splitter document.cookie ved semikoloner og indsætter de splittede dele ind i et array kaldet ca (ca = decodedCookie.split (';')).
+        var ca = decodedCookie.split(';');
+
+        // Loop gennem ca-arrayet (i = 0; i <ca.length; i ++), og læs hver værdi c = ca [i]).
+        for (var i = 0; i < ca.length; i++)
+        {
+            // console.log(ca[0]); retunerer f.eks. moneyStatus=95
+            var c = ca[i];
+
+            // Metoden charAt () returnerer tegnet på det angivne indeks i en streng.
+            // Følgende while loop checcker om der er mellemrum inden navnet på cookien starter og fjerner mellemrum ind til den støder på et tegn 
+            while (c.charAt(0) == ' ')
+            {
+                c = c.substring(1);
+            }
+            // Hvis cookien er fundet (c.indexOf (name) == 0), returner cookieens værdi (c.substring (name.length, c.length).
+            if (c.indexOf(name) == 0)
+            {
+                // følgende retunerer en ny string som starter efter moneyStatus=
+                // og stopper efter dens værdi
+                // så kunne f.eks. retunere 95 hvis moneyStatus=95
+                return c.substring(name.length, c.length);
+                // koden inde i funktionen stopper efter return
+            }
+        }
+        // Hvis cookien ikke findes, skal der returneres "" (ingenting).
+        return "";
+    }
+
+    // Her checker vi om brugerens beløb er lig med 0 når han reloader siden
+    // Og hvis det er tilfældet så kører vi game over funktionen 
+    if (getCookie("moneyStatus") <= 0)
+    {
+        GameOver();
+    }
+
+    // Hvis der ikke kan findes en cookie ved navn moneyStatus, så skal 
+    // variablen moneyStatus resettes til 100 og der skal sættes en cookie 
+    // til dens værdi 
+
+    if (!getCookie("moneyStatus"))
+    {
+        moneyStatus = 100;
+        setCookie("moneyStatus", moneyStatus, 5);
+    }
+    else
+    {
+        // Men hvis den allerede er sat til noget skal browseren bare hente de data der er gemt i cookien
+        moneyStatus = getCookie("moneyStatus");
+    }
+
+    // Følgende er arrays inden i et array hvilket også bliver kaldt nested arrays 
+    // Følgende array (Payout) har indexene 0-8 (9 elementer) og hvert  af de 9 elementer indeholder i sig selv 6 elementer
+    // Så f.eks. Payout[1][3] retunere 200 da det får adgang til index 1 (2nd element) og index 3 (4th element) inden i det element hvilket er 200.     
+    var Payout = [
+        ['Royal Flush', 250, 500, 1000, 2000, 4000],
+        ['Straight Flush', 50, 100, 200, 400, 800],
+        ['Four of a Kind', 25, 50, 75, 100, 125],
+        ['Full House', 9, 18, 27, 36, 45],
+        ['Flush', 6, 12, 18, 24, 30],
+        ['Straight', 4, 8, 12, 16, 20],
+        ['Three of a Kind', 3, 6, 9, 12, 15],
+        ['Two Pair', 2, 4, 6, 8, 10],
+        ['Jacks or better', 1, 2, 3, 4, 5]
+    ];
+
+    //Følgende funktion tjekker hvilken gevinst man skal have, ud fra pokerhånden som man har fået.
+    //F.eks. hvis man har 'jacks or better' og har bettet 5, 
+    //så bliver denne funktion kaldt med parametrerne (8, 5) 
+    // og  så får du udbetalt et beløb på 5 point i det tilfælde
+    function PokerHandPayout(pokerHanden, theSats)
+    {
+        // Følgende tjekker om variablen udbetalingAllowed er true, hvilken den kun er når man trykker på dealAgain knappen
+        // Hvilket sørger for at spilleren først får hans penge efter sidste deal. 
+        if (udbetalingAllowed == true)
+        {
+            // Her sætter vi variablen Penge lig med et beløb
+            // der svare til gevinsten der er vundet(læs var Payout kommentar)
+            Penge = Payout[pokerHanden][theSats];
+            moneyStatus = moneyStatus + Penge;
+            // Denne funktion opdatere også beløbet på skærmen og satsen. 
+            opdaterBeloebOgSats()
+            udbetalingAllowed = false;
+        }
+
+        //Dette bruges til at identificere vores tabel, med priserne på hvad man vinder.
+        //Vi bruger "-" til at kunne bruge det som id, i stedet for mellemrum
+        indexBoth = pokerHanden + "-" + theSats;
+    }
+    // Følgende funktion reseter tabellens bagrund til ikke defineret 
+    function fjernHighlight()
+    {
+        document.getElementById(indexBoth).style.backgroundColor = "";
+    }
+
+    // Følgende funktion virker på den måde, at den
+    // sammenligner a og b. F.eks hvis a = 40 og b = 100, vil
+    // funktionen beregne 40-100, og returnerer -60 (en negativ værdi).
+    // Sorteringsfunktionen sorterer 40 som en værdi lavere end 100.
+    function cardSort(a, b)
+    {
+        
+        return a - b;
+    }
+    
+
+        // Følgende funktion bliver kaldt i DealXAmount funktionen, som bliver
+        // Kørt når spilleren trykker på Deal Again knappen. 
+        function DealAgain ()
+        {
+
+            //Her dealer vi igen fem kort får at have dem klar når brugeren trykker på deal again knappen 
+            // Da han skal have uddelt op til 5 nye kort i det tilfælde 
+
+            let newHand = deck.deal(5);
+
+            var newName0 = newHand[0].name;
+            var newName1 = newHand[1].name;
+            var newName2 = newHand[2].name;
+            var newName3 = newHand[3].name;
+            var newName4 = newHand[4].name;
+
+            for (let c = 0; c < 5; c++)
+            {
+
+                 // Metoden replace () returnerer en ny streng hvor windows.location.href bliver udskiftet med ""
+                // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i dette tilfælde 
+                //så 'kort' + c's src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
+                // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med variablen kortSrc
+                let kortSrc = document.getElementById("kort" + c).src.replace(window.location.href, "");
+
+                if (kortSrc == "img/Red_back.jpg")
+                {
+                    // Her sætter jeg de hand [] kort der har red back = et nyt kort der blev dealet ind
+                    // i newHand arrayet, så jeg skifter værdien af feks hand[0] hvis man valgte at discarde det kort. 
+                    hand[c] = newHand[c]
+                    $('#kort' + c).css(
+                    {
+                        // Her roterer vi kortet 90 grader
+                        'transform': 'rotatey(90deg)'
+                    });
+                    // Hvorefter at vi sætter en timer til at vente 270 millisekunder før TransformToCard bliver kørt
+                    setTimeout(TransformToCard, 270);
+
+                }
+
+                // hand[] får de nye værdier af newHand [], så de nye kort der bliver vist efter Deal Again passer
+                // med det der bliver gemt i hand[]. Hvilket vil sige at når der vi checker værdierne af den nye
+                // udellede hånd, så stemmer det overens. 
+
+                // Følgende funktion får kortetene til at rotere når de bliver uddelt 
+                function TransformToCard()
+                {
+                    // Ændrer billidets bagrund til kortets forside
+                    document.getElementById("kort" + c).src = "img/" + hand[c].name + ".jpg";
+                    // Følgende resseter kortets rotation, så det er tilbage til 0 grader 
+                    $('#kort' + c).css(
+                    {
+                        'transform': 'rotatey(0deg)'
+                    });
+
+                }
+            }
+            // Køre CheckPokerhaand funktionen efter man dealer igen. 
+            CheckPokerhaand();
+        }
+
+
+
+
+    //Følgende funktion deaktivere "Deal Again" knappen fra starten, da det kun er "Deal" knappen som skal bruges. 
+    function deaktiverDealAgainKnap()
+    {
+
+        document.getElementById('deal-second').style.opacity = "0";
+        document.getElementById('deal-second').style.cursor = "default";
+        document.getElementById('deal-second').style.display = "none";
+
+    }
+
+
+
+        //Her deaktiverer vi "Deal Again" knappen fra starten, da det kun er "Deal" knappen som skal bruges, ved at køre følgende funktion.
+    deaktiverDealAgainKnap();
+
+    // Den opdatere også beløbet på skærmen og satsen. 
+    opdaterBeloebOgSats();
+
+
+
+
+
+    //Her aktiverer vi "Deal Again" knappen og deaktiverer "Deal", da det nu er omvendt ifht. brug af knapperne.
+    function activateDealAgainButton()
+    {
+
+        if (sats == 0)
+        {
+            // Følgende funktion bliver benyttet for at forhindre spilleren i at få uddelt kort, hvis spilelren ikke har satset point først
+            DuSkalSatseFirst();
+        }
+        else
+        {
+            document.getElementById('deal-first').disabled = false;
+
+            document.getElementById('deal-second').style.opacity = "1";
+            document.getElementById('deal-second').style.cursor = "pointer";
+            document.getElementById('deal-second').style.display = "";
+
+            document.getElementById('deal-first').style.opacity = "0";
+            document.getElementById('deal-first').style.cursor = "default";
+            document.getElementById('deal-first').style.display = "none";
+
+            //Her ændres knappernes udseende, alt efter om de er aktive eller ej.
+            document.getElementById('max-bet').style.opacity = "0.4";
+            document.getElementById('max-bet').style.cursor = "not-allowed";
+            document.getElementById('max-bet').disabled = true;
+
+            document.getElementById('single-bet').disabled = true;
+            document.getElementById('single-bet').style.cursor = "not-allowed";
+            document.getElementById('single-bet').style.opacity = "0.4";
+
+            //Vi fjerner statussen.
+            document.getElementById('status-message').innerHTML = "";
+        }
+    }
+
+    // Køre hvis spilleren ikke har flere penge 
+    function GameOver()
+    {
+
+        //FJERNER ALLE ELEMENTER PÅ SIDEN, FOR AT DER KAN STÅ "GAME OVER" INKL. EN KNAP
+        document.getElementById('sign').style.display = "none";
+        document.getElementById('bet-info').style.display = "none";
+        document.getElementById('bet-buttons').style.display = "none";
+        document.getElementById('kort-placering').style.display = "none";
+        document.getElementById('deal-first').style.display = "none";
+        document.getElementById('deal-second').style.display = "none";
+        document.getElementById('stand-knap').style.display = "none";
+        //document.getElementById('royal-div').style.display = "none";
+        document.getElementById('demo').style.display = "none";
+
+        // Her benytter vi JQuery syntax til at ændre baggrundsbillidet til
+        // et portræt hvor der står Game Over.
+        $('body').css('background-image', 'url(img/GameOver.png)');
+        
+        document.getElementById('table-id').style.display = "none";
+        document.getElementById('knapper-div').style.display = "none";
+        
+
+        setTimeout("window.location.reload();", 1800);
+        setCookie("moneyStatus", 100, 5)
+    }
+
+    //Her gør vi det modsatte, end funktionen ovenover.
+    // Følgende funktion aktivere Deal Knappen
+    function activateDealButton()
+    {
+
+        document.getElementById('deal-first').style.opacity = "1";
+        document.getElementById('deal-first').style.cursor = "pointer";
+        document.getElementById('deal-first').style.display = "";
+
+
+
+        //Her deaktiverer vi "Deal Again" knappen fra starten, da det kun er     "Deal" knappen som skal bruges, ved at køre følgende funktion.
+        deaktiverDealAgainKnap();
+
+        //Her ændres knappernes udseende, alt efter om de er aktive eller ej.
+        document.getElementById('max-bet').style.opacity = "1";
+        document.getElementById('max-bet').style.cursor = "pointer";
+        document.getElementById('max-bet').disabled = false;
+
+        document.getElementById('single-bet').disabled = false;
+        document.getElementById('single-bet').style.cursor = "pointer";
+        document.getElementById('single-bet').style.opacity = "1";
+        sats0();
+
+    }
+
+    
+    //Følgende funktion bliver kørt, når man trykker på "Deal Again"-knappen
+    //Denne funktion indeholder forskellige ting, så som vigtige ting ifht. kortene, om du fået udbetalt penge m.m.
+    //Diverse kommentarer kan findes ved de forskellige ting, som forklarer lidt nærmere om dem
+    function DealXAmount()
+    {
+        //Hvis spilleren ikke har flere penge slutter spillet, og derved køres "GameOver()" funktionen
+        if (moneyStatus == 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            //Hvis ikke spillet er slut, fortsætter koden
+            // Ændrer variablen udbetalingAllowed til true da brugeren skal have udbetalt hans penge 
+            udbetalingAllowed = true;
+            
+            //Her fixer vi stien til kortene, hvilket vil sige at hvis man logger det i konsollen, viser den navnet på det aktuelle kort
+            //Hvis dette stykke kode ikke blev udført, ville man kunne se "http://localhost:8080/.../" osv i konsollen - dette kan IKKE bruges
+            let kortSrc0 = document.getElementById('kort0').src.replace(window.location.href, "");
+            let kortSrc1 = document.getElementById('kort1').src.replace(window.location.href, "");
+            let kortSrc2 = document.getElementById('kort2').src.replace(window.location.href, "");
+            let kortSrc3 = document.getElementById('kort3').src.replace(window.location.href, "");
+            let kortSrc4 = document.getElementById('kort4').src.replace(window.location.href, "");
+
+            //Vi spørger om minimum ét af kortene er har den røde baggrund.
+            //Hvis dette er rigtigt (true), så fortæller vi brugeren at man skal vælge mindst ét kort, til udskiftning.                
+            if (!(kortSrc0 == "img/Red_back.jpg" || kortSrc1 == "img/Red_back.jpg" || kortSrc2 == "img/Red_back.jpg" || kortSrc3 == "img/Red_back.jpg" || kortSrc4 == "img/Red_back.jpg"))
+            {
+                //Her fanger vi elementet vi vil vise beskeden i, og ændrer teksten samt farven
+                document.getElementById('status-message').innerHTML = "Du skal vælge mindst ét kort, før du kan få nye kort.";
+                document.getElementById('status-message').style.color = "red";
+            }
+            else
+            {
+                //Hvis der er valgt mindst ét kort, så sørger vi for at beskeden er tom, og udfører diverse funktioner.
+                document.getElementById('status-message').innerHTML = "";
+                // Vi kører DealAgain funktion som uddeler en ny hånd 
+                DealAgain();
+                //Her aktiverer vi "Deal"-knappen igen
+                activateDealButton();
+
+                //Fix stand-knappen, så den bliver inaktiv igen.
+                document.getElementById('stand-knap').style.opacity = "0.4";
+                document.getElementById('stand-knap').style.cursor = "not-allowed";
+                document.getElementById('stand-knap').disabled = true;
+                // Følgende funktion checker om spilleren har vundet point og 
+                // i det tilfælde at spilleren har vundet, så udskrivet der hvor meget han har vundet 
+                duHarVundet (); 
+            }
+        }
+    }
+    
+    // Følgende funktion checker om spilleren har vundet point og 
+    // i det tilfælde at spilleren har vundet, så udskrivet der hvor meget han har vundet 
+    function duHarVundet ()
+    {
+        //Vi tjekker om vores variabel "penge" er større end nul, hvilket den vil være, hvis spilleren vinder point
+        if (Penge > 0)
+        {
+
+            // Udskriver gevinstet for pokerhånden 
+            document.getElementById("gevinst").innerHTML = "Du har vundet " + Penge + " point!";
+
+            Penge = 0;
+            // Følgende sørger for at spilleren ikke kan skifte baggrunde på kortene efter runden er slut
+            laasKortFast();
+
+            //Backgrunden skifter farve, når spilleren vælger at få udbetalt sine penge.
+            document.getElementById(indexBoth).style.backgroundColor = "#d4af37";
+            setTimeout(fjernHighlight, 2000);
+        }
+        else
+        {
+            null;
+            // Følgende sørger for at spilleren ikke kan skifte baggrunde på kortene efter runden er slut
+            laasKortFast();
+        }
+    }
+    </script>
+</body>
+</html>
