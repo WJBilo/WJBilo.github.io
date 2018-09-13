@@ -351,6 +351,14 @@
     var indexBoth;
 
 
+    // Metoden replace () returnerer en ny streng hvor index.html bliver udskiftet med ""
+    // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/index.html i vores tilfælde
+    // Vi checker om index.html er i slutningen af URL'en og fjerner den og sætter den nye URL
+    // lig med variablen nyBrowserURL
+    // Vi bruger så denne variabel i adskillige funktioner
+    var nyBrowserURL = window.location.href.replace('index.html', ""); 
+
+
     // Stand knappen skal fra start af være deaktiveret 
     document.getElementById('stand-knap').disabled = true;
 
@@ -664,13 +672,14 @@
     function udskift(Card, CardID)
     {
 
-        // Metoden replace () returnerer en ny streng hvor windows.location.href bliver udskiftet med ""
+        // Metoden replace () returnerer en ny streng hvor windows.location.href (nyBrowserURL) bliver udskiftet med ""
         // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i dette tilfælde 
         //så CardID's src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
         // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med 
         // variablen kortSrc
+            
 
-        let kortSrc = document.getElementById(CardID).src.replace(window.location.href, "");
+        let kortSrc = document.getElementById(CardID).src.replace(nyBrowserURL, "");
 
         // I følgende if statement checker vi om kort-billedets src passer til
         // navnet på kort objektet og hvis det gøt det, så skal vi ændre src'en til den røde bagside af kortet
@@ -1134,11 +1143,12 @@
             for (let c = 0; c < 5; c++)
             {
 
-                 // Metoden replace () returnerer en ny streng hvor windows.location.href bliver udskiftet med ""
-                // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i dette tilfælde 
-                //så 'kort' + c's src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
-                // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med variablen kortSrc
-                let kortSrc = document.getElementById("kort" + c).src.replace(window.location.href, "");
+                 // Metoden replace () returnerer en ny streng hvor windows.location.href (nyBrowserURL) bliver udskiftet med ""
+                 // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i vores tilfælde 
+                 //så "kort" + c src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
+                 // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med 
+                 // variablen kortSrc
+                let kortSrc = document.getElementById("kort" + c).src.replace(nyBrowserURL, "");
 
                 if (kortSrc == "img/Red_back.jpg")
                 {
@@ -1306,13 +1316,17 @@
             // Ændrer variablen udbetalingAllowed til true da brugeren skal have udbetalt hans penge 
             udbetalingAllowed = true;
             
-            //Her fixer vi stien til kortene, hvilket vil sige at hvis man logger det i konsollen, viser den navnet på det aktuelle kort
-            //Hvis dette stykke kode ikke blev udført, ville man kunne se "http://localhost:8080/.../" osv i konsollen - dette kan IKKE bruges
-            let kortSrc0 = document.getElementById('kort0').src.replace(window.location.href, "");
-            let kortSrc1 = document.getElementById('kort1').src.replace(window.location.href, "");
-            let kortSrc2 = document.getElementById('kort2').src.replace(window.location.href, "");
-            let kortSrc3 = document.getElementById('kort3').src.replace(window.location.href, "");
-            let kortSrc4 = document.getElementById('kort4').src.replace(window.location.href, "");
+
+            // Metoden replace () returnerer en ny streng hvor windows.location.href (nyBrowserURL) bliver udskiftet med ""
+            // windows.location.href vil være lig med http://localhost:8080/nytpokertingen/ i vores tilfælde 
+            //så "kort0" src ændrer sig fra http://localhost:8080/nytpokertingen/img/10 of Spades.jpg 
+            // til img/10 of spades.jpg ved hjælp af følgende kode og den retunerede string bliver sat lig med 
+            // variablen kortSrc0
+            let kortSrc0 = document.getElementById('kort0').src.replace(nyBrowserURL, "");
+            let kortSrc1 = document.getElementById('kort1').src.replace(nyBrowserURL, "");
+            let kortSrc2 = document.getElementById('kort2').src.replace(nyBrowserURL, "");
+            let kortSrc3 = document.getElementById('kort3').src.replace(nyBrowserURL, "");
+            let kortSrc4 = document.getElementById('kort4').src.replace(nyBrowserURL, "");
 
             //Vi spørger om minimum ét af kortene er har den røde baggrund.
             //Hvis dette er rigtigt (true), så fortæller vi brugeren at man skal vælge mindst ét kort, til udskiftning.                
